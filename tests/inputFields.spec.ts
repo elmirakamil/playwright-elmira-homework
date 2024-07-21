@@ -25,7 +25,8 @@ test('change the name of the cat', async ({ page }) => {
     await page.getByRole('button', { name: 'Update' }).click()
 
     //6. Add the assertion that the first pet type in the list of types has a value "rabbit" 
-    await expect(page.locator('input[name=pettype_name]').first()).toHaveValue('rabbit')
+    const firstPetType = page.locator('input[name=pettype_name]').first()
+    await expect(firstPetType).toHaveValue('rabbit')
 
 
     //7. Click on "Edit" button for the same "rabbit" pet type
@@ -39,8 +40,7 @@ test('change the name of the cat', async ({ page }) => {
     await editPetTypeInputField.fill('cat')
     await page.getByRole('button', { name: 'Update' }).click()
 
-    //9. Add the assertion that the first pet type in the list of names has a value "cat" 
-    const firstPetType = page.locator('input[name=pettype_name]').first()
+    //9. Add the assertion that the first pet type in the list of names has a value "cat"
     await expect(firstPetType).toHaveValue('cat')
 })
 
@@ -79,8 +79,7 @@ test('Pet type name is required validation', async ({ page }) => {
     await editPetTypeInputField.clear()
 
     //5. Add the assertion for the "Name is required" message below the input field
-    const requiredNameInField = await page.locator('.help-block', { hasText: 'Name is required' }).textContent()
-    await expect(requiredNameInField).toContain('Name is required')
+    await expect(page.locator('.help-block')).toContainText('Name is required')
 
     //6. Click on "Update" button
     await page.getByRole('button', { name: 'Update' }).click()
