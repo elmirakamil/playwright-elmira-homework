@@ -23,7 +23,6 @@ test('add and delete pet type', async ({ page }) => {
     await expect(inputValue).toBeVisible()
 
     //5. Add a new pet type with the name "pig" and click "Save" button
-    await inputValue.click()
     await inputValue.fill('pig')
     await page.getByText("Save").click()
 
@@ -38,6 +37,9 @@ test('add and delete pet type', async ({ page }) => {
         //9. Click on OK button on the dialog box
         dialog.accept()
     })
-    //10. Add assertion, that the last item in the list of pet types is not the "pig"
+    //yes, it removes last added value ))))
     await page.getByRole('button', { name: 'Delete' }).last().click()
+
+    //10. Add assertion, that the last item in the list of pet types is not the "pig"
+    await expect(page.getByRole('textbox').last()).not.toHaveValue('pig')
 })
