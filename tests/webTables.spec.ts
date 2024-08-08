@@ -114,7 +114,6 @@ test('validate specialty update', async ({ page }) => {
     //8. Add assertion that "surgery" was changed to "dermatology" in the list of specialties
     const specialtyInput = page.locator('#name')
     await expect(specialtyInput).toHaveValue('surgery')
-    await specialtyInput.clear()
     await specialtyInput.fill('dermatology')
     await page.getByText('Update').click()
     //9. Select the VETERINARIANS menu item in the navigation bar, then select "All"
@@ -133,7 +132,6 @@ test('validate specialty update', async ({ page }) => {
     }
 
     await expect(specialtyInput).toHaveValue('dermatology')
-    await specialtyInput.clear()
     await specialtyInput.fill('surgery')
     await page.getByText('Update').click()
 })
@@ -141,7 +139,6 @@ test('validate specialty update', async ({ page }) => {
 test('validate specialty lists', async ({ page }) => {
     //1. Select the SPECIALTIES menu item in the navigation bar
     await page.getByText('Specialties').click()
-    await page.waitForSelector('tbody')
     //2. On the Specialties page, select "Add" button. Type the new specialty "oncology" and click "Save" button
     await page.getByRole('button', { name: 'Add' }).click()
     await page.locator('#name').fill('oncology')
@@ -156,8 +153,8 @@ test('validate specialty lists', async ({ page }) => {
     }
 
     //4. Select the VETERINARIANS menu item in the navigation bar, then select "All"
-    await page.getByText('Veterinarians').click()
-    await page.locator(".dropdown-menu").getByText(" All").click()
+    await page.getByText("Veterinarians").click()
+    await page.getByText("All").click()
     //5. On the Veterinarians page, locate the "Sharon Jenkins" in the list and click "Edit" button
     await page.getByRole('row', { name: 'Sharon Jenkins' }).getByText('Edit Vet').click()
     //6. Click on the Specialties drop-down menu. Extract all values from the drop-down menu to an array
@@ -175,8 +172,8 @@ test('validate specialty lists', async ({ page }) => {
     await page.getByRole('link', { name: 'Specialties' }).click()
     await page.locator('tbody tr').last().getByRole('button', { name: "Delete" }).click()
     //11. Navigate to VETERINARIANS page. Add assertion that "Sharon Jenkins" has no specialty assigned
-    await page.getByText('Veterinarians').click()
-    await page.locator(".dropdown-menu").getByText(" All").click()
+    await page.getByText("Veterinarians").click()
+    await page.getByText("All").click()
     await expect(page.getByRole('row', { name: 'Sharon Jenkins' }).getByRole('cell').nth(1)).toBeEmpty()
 })
 
