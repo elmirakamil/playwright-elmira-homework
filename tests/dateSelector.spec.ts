@@ -12,12 +12,12 @@ test('select the desired date in the calendar', async ({ page }) => {
     //3. On the Owner Information page, select "Add New Pet" button
     await page.getByRole('button', { name: 'Add New Pet' }).click()
     //4. In the Name field, type any new pet name, for example "Tom"
-    const calenderIcon = page.locator('span.glyphicon.form-control-feedback').first()
+    const calendarIcon = page.locator('span.glyphicon.form-control-feedback').first()
     //assert the icon 'x'
-    await expect(calenderIcon).toHaveClass(/glyphicon-remove/)
+    await expect(calendarIcon).toHaveClass(/glyphicon-remove/)
     await page.locator('#name').fill('Tom')
     //5. Add the assertion of icon in the input field the "checkmark" icon
-    await expect(calenderIcon).toHaveClass(/glyphicon-ok/)
+    await expect(calendarIcon).toHaveClass(/glyphicon-ok/)
     //6. Click on the calendar icon for the "Birth Date" field
     await page.getByLabel('Open calendar').click()
     //7. Using calendar selector, select the date "May 2nd, 2014"
@@ -62,7 +62,7 @@ test('select the desired date in the calendar part II', async ({ page }) => {
     const year = date.getFullYear();
     const month = date.toLocaleString('en-US', { month: '2-digit' })
     const day = date.toLocaleString('en-US', { day: '2-digit' })
-    const currentDateFormatted = `${year}-${month}-${day}`
+    const expectedDermatologyAppointmentDate = `${year}-${month}-${day}`
     await expect(page.locator('.mat-datepicker-input')).toHaveValue(`${year}/${month}/${day}`)
 
     //8. Type the description in the field, for example, "dermatologists visit" and click "Add Visit" button
@@ -71,12 +71,12 @@ test('select the desired date in the calendar part II', async ({ page }) => {
 
     //9. Add assertion that selected date of visit is displayed at the top of the list of visits 
     //for "Samantha" pet on the "Owner Information" page and is in the format "YYYY-MM-DD"
-    await expect(petsAndVisitsRowOfSamatha.locator('app-visit-list tr td').first()).toHaveText(currentDateFormatted)
+    await expect(petsAndVisitsRowOfSamatha.locator('app-visit-list tr td').first()).toHaveText(expectedDermatologyAppointmentDate)
 
     //10. Add one more visit for "Samantha" pet by clicking "Add Visit" button
     await petsAndVisitsRowOfSamatha.getByText('Add Visit').click()
     //11. Click on the calendar icon and select the date which is 45 days back from the current date
-    await page.locator('.mdc-icon-button').click()
+    await page.getByLabel('Open calendar').click()
     date.setDate(date.getDate() - 45)
     // Get the year, month, and day for the massage appointment
     const previousAppointmentYear = date.getFullYear();
@@ -105,12 +105,12 @@ test('select the desired date in the calendar part II', async ({ page }) => {
     const currentAppointmentDateforSamathasPet = await petAllAppointments.nth(2).locator('td').first().textContent()
     expect(Date.parse(currentAppointmentDateforSamathasPet!) < Date.parse(laterAppointmentDateforSamathasPet!)).toBeTruthy()
     //14. Select the "Delete Visit" button for both newly created visits
-    await petsAndVisitsRowOfSamatha.locator('app-visit-list tr', { hasText: currentDateFormatted }).getByText('Delete Visit').click()
+    await petsAndVisitsRowOfSamatha.locator('app-visit-list tr', { hasText: expectedDermatologyAppointmentDate }).getByText('Delete Visit').click()
     await petsAndVisitsRowOfSamatha.locator('app-visit-list tr', { hasText: expectedMassageAppointmentDate }).getByText('Delete Visit').click()
     await page.waitForResponse("https://petclinic-api.bondaracademy.com/petclinic/api/visits/*")
     //15. Add the assertion that deleted visits are no longer displayed in the table on "Owner Information" page
     for (const row of await petAllAppointments.all()) {
-        expect(await row.textContent()).not.toContain(currentDateFormatted)
+        expect(await row.textContent()).not.toContain(expectedDermatologyAppointmentDate)
         expect(await row.textContent()).not.toContain(expectedMassageAppointmentDate)
     }
 })
